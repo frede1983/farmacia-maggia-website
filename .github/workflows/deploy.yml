@@ -1,0 +1,90 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+        run: |
+          ssh -p ${VPS_PORT:-22} ${VPS_USERNAME}@${VPS_HOST} << 'ENDSSH'
+            set -e
+
+            PROJECT_NAME="farmacia-maggia-website"
+            DEPLOY_DIR="/opt/$PROJECT_NAME"
+            REPO_URL="https://github.com/${{ github.repository }}.git"
+
+            echo "🚀 Starting deployment..."
+
+            # Create deploy directory if it doesn't exist
+            if [ ! -d "$DEPLOY_DIR" ]; then
+              echo "Creating deployment directory..."
+              mkdir -p "$DEPLOY_DIR"
+              cd "$DEPLOY_DIR"
+              git clone "$REPO_URL" .
+            else
+              cd "$DEPLOY_DIR"
+              echo "Pulling latest changes..."
+              git fetch origin
+              git reset --hard origin/${{ github.ref_name }}
+            fi
+
+            # Run deployment script
+            echo "Running deployment script..."
+            bash scripts/deploy.sh
+
+            echo "✅ Deployment completed!"
+          ENDSSH
+
+      - name: Verify deployment
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+        run: |
+          ssh -p ${VPS_PORT:-22} ${VPS_USERNAME}@${VPS_HOST} << 'ENDSSH'
+            cd /opt/farmacia-maggia-website
+
+            # Get port from .env
+            PORT=$(grep PORT .env | cut -d '=' -f2)
+
+            # Check health endpoint
+            if curl -f -s "http://localhost:$PORT/health" > /dev/null; then
+              echo "✅ Health check passed!"
+              echo "🌐 Service is running on port $PORT"
+            else
+              echo "❌ Health check failed!"
+              exit 1
+            fi
+          ENDSSH
+
+      - name: Deployment summary
+        if: success()
+        run: |
+          echo "## ✅ Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Project:** farmacia-maggia-website" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployed to:** ${{ secrets.VPS_HOST }}" >> $GITHUB_STEP_SUMMARY

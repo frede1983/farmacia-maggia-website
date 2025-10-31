@@ -1,0 +1,20 @@
+{
+  "common": {
+    "welcome": "Benvenuti",
+    "home": "Home",
+    "services": "Servizi",
+    "about": "Chi Siamo",
+    "contact": "Contatti",
+    "language": "Lingua"
+  },
+  "home": {
+    "title": "Farmacia Maggia",
+    "subtitle": "La tua farmacia di fiducia in Ticino",
+    "description": "Servizi farmaceutici professionali a CH-6673 Maggia",
+    "cta": "Contattaci"
+  },
+  "footer": {
+    "address": "CH-6673 Maggia, Ticino, Svizzera",
+    "rights": "Tutti i diritti riservati"
+  }
+}

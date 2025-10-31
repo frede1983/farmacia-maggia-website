@@ -1,0 +1,20 @@
+{
+  "common": {
+    "welcome": "Willkommen",
+    "home": "Startseite",
+    "services": "Dienstleistungen",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "language": "Sprache"
+  },
+  "home": {
+    "title": "Apotheke Maggia",
+    "subtitle": "Ihre vertrauenswürdige Apotheke im Tessin",
+    "description": "Professionelle pharmazeutische Dienstleistungen in CH-6673 Maggia",
+    "cta": "Kontaktieren Sie uns"
+  },
+  "footer": {
+    "address": "CH-6673 Maggia, Tessin, Schweiz",
+    "rights": "Alle Rechte vorbehalten"
+  }
+}

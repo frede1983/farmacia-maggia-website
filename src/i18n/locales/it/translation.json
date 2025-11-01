@@ -5,16 +5,44 @@
     "services": "Servizi",
     "about": "Chi Siamo",
     "contact": "Contatti",
-    "language": "Lingua"
+    "language": "Lingua",
+    "phone": "Telefono",
+    "email": "Email",
+    "fax": "Fax",
+    "address": "Indirizzo"
   },
   "home": {
     "title": "Farmacia Maggia",
     "subtitle": "La tua farmacia di fiducia in Ticino",
     "description": "Servizi farmaceutici professionali a CH-6673 Maggia",
-    "cta": "Contattaci"
+    "cta": "Contattaci",
+    "owner": "prop. Isabella Sollberger farm. dipl"
+  },
+  "team": {
+    "title": "Il Nostro Team",
+    "subtitle": "Un team di professionisti al tuo servizio con esperienza e competenza"
+  },
+  "hours": {
+    "title": "Orari di Apertura",
+    "weekdays": "lunedì - venerdì",
+    "saturday": "sabato",
+    "sunday": "domenica",
+    "morning": "Mattina",
+    "afternoon": "Pomeriggio",
+    "closed": "Chiuso"
+  },
+  "contact": {
+    "title": "Contattaci",
+    "subtitle": "Siamo a tua disposizione per qualsiasi informazione",
+    "phone": "091 753 22 62",
+    "fax": "091 753 26 48",
+    "email": "info@farmaciamaggia.ch",
+    "address": "CH-6673 Maggia, Ticino, Svizzera"
   },
   "footer": {
     "address": "CH-6673 Maggia, Ticino, Svizzera",
-    "rights": "Tutti i diritti riservati"
+    "rights": "Tutti i diritti riservati",
+    "phone": "091 753 22 62",
+    "email": "info@farmaciamaggia.ch"
   }
 }

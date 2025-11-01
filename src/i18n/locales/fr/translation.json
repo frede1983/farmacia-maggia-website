@@ -3,18 +3,46 @@
     "welcome": "Bienvenue",
     "home": "Accueil",
     "services": "Services",
-    "about": "À propos",
+    "about": "À Propos",
     "contact": "Contact",
-    "language": "Langue"
+    "language": "Langue",
+    "phone": "Téléphone",
+    "email": "Email",
+    "fax": "Fax",
+    "address": "Adresse"
   },
   "home": {
     "title": "Pharmacie Maggia",
     "subtitle": "Votre pharmacie de confiance au Tessin",
     "description": "Services pharmaceutiques professionnels à CH-6673 Maggia",
-    "cta": "Contactez-nous"
+    "cta": "Contactez-nous",
+    "owner": "prop. Isabella Sollberger pharm. dipl"
+  },
+  "team": {
+    "title": "Notre Équipe",
+    "subtitle": "Une équipe de professionnels à votre service avec expérience et compétence"
+  },
+  "hours": {
+    "title": "Horaires d'Ouverture",
+    "weekdays": "lundi - vendredi",
+    "saturday": "samedi",
+    "sunday": "dimanche",
+    "morning": "Matin",
+    "afternoon": "Après-midi",
+    "closed": "Fermé"
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Nous sommes à votre disposition pour toute information",
+    "phone": "091 753 22 62",
+    "fax": "091 753 26 48",
+    "email": "info@farmaciamaggia.ch",
+    "address": "CH-6673 Maggia, Tessin, Suisse"
   },
   "footer": {
     "address": "CH-6673 Maggia, Tessin, Suisse",
-    "rights": "Tous droits réservés"
+    "rights": "Tous droits réservés",
+    "phone": "091 753 22 62",
+    "email": "info@farmaciamaggia.ch"
   }
 }

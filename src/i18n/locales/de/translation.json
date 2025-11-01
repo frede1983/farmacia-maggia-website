@@ -3,18 +3,46 @@
     "welcome": "Willkommen",
     "home": "Startseite",
     "services": "Dienstleistungen",
-    "about": "Über uns",
+    "about": "Über Uns",
     "contact": "Kontakt",
-    "language": "Sprache"
+    "language": "Sprache",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "fax": "Fax",
+    "address": "Adresse"
   },
   "home": {
     "title": "Apotheke Maggia",
     "subtitle": "Ihre vertrauenswürdige Apotheke im Tessin",
     "description": "Professionelle pharmazeutische Dienstleistungen in CH-6673 Maggia",
-    "cta": "Kontaktieren Sie uns"
+    "cta": "Kontaktieren Sie uns",
+    "owner": "Inhaber Isabella Sollberger dipl. Apothekerin"
+  },
+  "team": {
+    "title": "Unser Team",
+    "subtitle": "Ein Team von Fachleuten zu Ihrem Service mit Erfahrung und Kompetenz"
+  },
+  "hours": {
+    "title": "Öffnungszeiten",
+    "weekdays": "Montag - Freitag",
+    "saturday": "Samstag",
+    "sunday": "Sonntag",
+    "morning": "Vormittag",
+    "afternoon": "Nachmittag",
+    "closed": "Geschlossen"
+  },
+  "contact": {
+    "title": "Kontaktieren Sie uns",
+    "subtitle": "Wir stehen Ihnen für alle Informationen zur Verfügung",
+    "phone": "091 753 22 62",
+    "fax": "091 753 26 48",
+    "email": "info@farmaciamaggia.ch",
+    "address": "CH-6673 Maggia, Tessin, Schweiz"
   },
   "footer": {
     "address": "CH-6673 Maggia, Tessin, Schweiz",
-    "rights": "Alle Rechte vorbehalten"
+    "rights": "Alle Rechte vorbehalten",
+    "phone": "091 753 22 62",
+    "email": "info@farmaciamaggia.ch"
   }
 }

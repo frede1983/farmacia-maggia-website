@@ -4,9 +4,9 @@
 
 Successfully deployed the Farmacia Maggia website to VPS (`srv1013438.hstgr.cloud`) using Docker containerization with automated health checks and port management.
 
-**Live URL:** http://srv1013438.hstgr.cloud:3007
-**Deployment Date:** 2025-10-31
-**Status:** ✅ Production Ready
+**🌐 Live URL:** http://srv1013438.hstgr.cloud:3030
+**Deployment Date:** 2025-10-31 - 2025-11-01
+**Status:** ✅ Production Ready & Publicly Accessible
 
 ---
 
@@ -16,7 +16,9 @@ Successfully deployed the Farmacia Maggia website to VPS (`srv1013438.hstgr.clou
 
 **Repository:** https://github.com/frede1983/farmacia-maggia-website
 **Deployment Directory:** `/opt/farmacia-maggia-website`
-**Port:** 3007 (auto-detected)
+**Docker Container Port:** 3007 (internal, auto-detected)
+**Public Access Port:** 3030 (NGINX reverse proxy)
+**NGINX Configuration:** `/etc/nginx/sites-available/farmacia-maggia`
 
 ### 2. Issues Encountered & Solutions
 
@@ -104,6 +106,58 @@ Docker Compose v2 doesn't require the `version` attribute and warns when it's pr
 Removed obsolete `version: '3.8'` from docker-compose.yml.
 
 **Commit:** `a9e2b71`
+
+---
+
+#### Issue #4: External Access and Port Configuration
+
+**Problem:**
+Initial NGINX reverse proxy configured on port 8090 was not accessible from external networks due to hosting provider firewall restrictions.
+
+**Testing Process:**
+```bash
+# Port 8090 - Blocked
+curl http://srv1013438.hstgr.cloud:8090
+# Result: Connection refused
+
+# Port 3030 - Accessible
+curl http://srv1013438.hstgr.cloud:3030
+# Result: HTTP 200 OK ✅
+```
+
+**Root Cause:**
+Hosting provider firewall blocks most high-numbered ports. Only specific ports are open for public access.
+
+**Solution:**
+Switched NGINX reverse proxy to port 3030, which is accessible through the provider's firewall.
+
+**NGINX Configuration:** `/etc/nginx/sites-available/farmacia-maggia`
+```nginx
+server {
+    listen 3030;
+    listen [::]:3030;
+    server_name srv1013438.hstgr.cloud;
+
+    location / {
+        proxy_pass http://localhost:3007;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /health {
+        proxy_pass http://localhost:3007/health;
+        access_log off;
+    }
+}
+```
+
+**Result:**
+- ✅ Site publicly accessible at http://srv1013438.hstgr.cloud:3030
+- ✅ Health endpoint working: http://srv1013438.hstgr.cloud:3030/health
+- ✅ Docker container isolated on internal port 3007
+- ✅ NGINX handles SSL termination capability for future HTTPS setup
 
 ---
 
@@ -433,6 +487,6 @@ For Claude Code assistance, mention `@claude` in GitHub issues or PR comments.
 
 ---
 
-**Last Updated:** 2025-10-31
-**Deployment Status:** ✅ Production
-**Service URL:** http://srv1013438.hstgr.cloud:3007
+**Last Updated:** 2025-11-01
+**Deployment Status:** ✅ Production & Publicly Accessible
+**Service URL:** http://srv1013438.hstgr.cloud:3030

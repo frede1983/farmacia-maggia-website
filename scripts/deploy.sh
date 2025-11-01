@@ -6,6 +6,7 @@ echo "🚀 Starting deployment for Farmacia Maggia Website..."
 PROJECT_NAME="farmacia-maggia-website"
 DEFAULT_PORT=3000
 DEPLOY_DIR="/opt/$PROJECT_NAME"
+SETUP_NGINX=${SETUP_NGINX:-no}  # Set to 'yes' to configure NGINX reverse proxy
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -122,3 +123,26 @@ echo ""
 echo "To stop service:"
 echo "  docker compose down"
 echo "========================================="
+
+# Setup NGINX reverse proxy if requested
+if [ "$SETUP_NGINX" = "yes" ]; then
+    echo ""
+    log_info "Setting up NGINX reverse proxy..."
+
+    if [ -f "$SCRIPT_DIR/setup-nginx-https.sh" ]; then
+        # Get environment variables for NGINX setup
+        NGINX_PORT=${NGINX_PORT:-3030}
+        SERVER_NAME=${SERVER_NAME:-$(hostname -f)}
+        ENABLE_HTTPS=${ENABLE_HTTPS:-yes}
+
+        bash "$SCRIPT_DIR/setup-nginx-https.sh" "$PORT" "$NGINX_PORT" "$SERVER_NAME" "$ENABLE_HTTPS"
+
+        echo ""
+        log_info "NGINX reverse proxy configured!"
+        log_info "Public URL: https://$SERVER_NAME:$NGINX_PORT (if HTTPS enabled)"
+    else
+        log_warn "NGINX setup script not found at: $SCRIPT_DIR/setup-nginx-https.sh"
+        log_warn "To setup NGINX manually, run:"
+        log_warn "  bash scripts/setup-nginx-https.sh $PORT 3030"
+    fi
+fi

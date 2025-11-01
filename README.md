@@ -146,6 +146,88 @@ cd /opt/farmacia-maggia-website
 bash scripts/deploy.sh
 ```
 
+### NGINX Reverse Proxy with HTTPS
+
+After deploying the Docker container, configure NGINX to provide public HTTPS access:
+
+#### Option 1: Automatic Setup (Recommended)
+
+Deploy with NGINX configuration in one command:
+
+```bash
+cd /opt/farmacia-maggia-website
+
+# Deploy with NGINX and HTTPS (auto-detects SSL certificates)
+SETUP_NGINX=yes bash scripts/deploy.sh
+
+# Or with custom settings
+SETUP_NGINX=yes \
+  NGINX_PORT=3030 \
+  SERVER_NAME=srv1013438.hstgr.cloud \
+  ENABLE_HTTPS=yes \
+  bash scripts/deploy.sh
+```
+
+#### Option 2: Manual NGINX Setup
+
+Run the NGINX setup script separately:
+
+```bash
+# Basic setup (will auto-detect SSL certificates)
+sudo bash scripts/setup-nginx-https.sh [CONTAINER_PORT] [PUBLIC_PORT] [SERVER_NAME] [yes|no]
+
+# Example: Setup HTTPS on port 3030
+sudo bash scripts/setup-nginx-https.sh 3007 3030 srv1013438.hstgr.cloud yes
+
+# Example: Setup HTTP only
+sudo bash scripts/setup-nginx-https.sh 3007 8080 srv1013438.hstgr.cloud no
+```
+
+The script will:
+- ✅ Check for SSL certificates (Let's Encrypt)
+- ✅ Create NGINX configuration with reverse proxy
+- ✅ Enable HTTP/2 and modern TLS (1.2, 1.3)
+- ✅ Configure security headers
+- ✅ Set up health check endpoint
+- ✅ Test and reload NGINX
+- ✅ Verify the endpoint is accessible
+
+#### Get SSL Certificate (if needed)
+
+If you don't have an SSL certificate yet:
+
+```bash
+# Install certbot
+sudo apt update
+sudo apt install -y certbot python3-certbot-nginx
+
+# Get Let's Encrypt certificate
+sudo certbot certonly --nginx -d your-domain.com
+
+# Run NGINX setup again to enable HTTPS
+sudo bash scripts/setup-nginx-https.sh 3007 3030 your-domain.com yes
+```
+
+#### NGINX Management
+
+```bash
+# View configuration
+cat /etc/nginx/sites-available/farmacia-maggia-website
+
+# Test configuration
+sudo nginx -t
+
+# Reload NGINX
+sudo systemctl reload nginx
+
+# View logs
+sudo tail -f /var/log/nginx/farmacia-maggia-website-*.log
+
+# Disable site
+sudo rm /etc/nginx/sites-enabled/farmacia-maggia-website
+sudo systemctl reload nginx
+```
+
 ### Monitoring
 
 ```bash
@@ -155,11 +237,23 @@ docker compose ps
 # View logs
 docker compose logs -f
 
-# Check health endpoint
+# Check health endpoint (Docker)
 curl http://localhost:[PORT]/health
+
+# Check health endpoint (HTTPS via NGINX)
+curl https://your-domain.com:3030/health
 
 # View port assignment
 cat .env
+
+# Check NGINX status
+sudo systemctl status nginx
+
+# View NGINX logs
+sudo tail -f /var/log/nginx/farmacia-maggia-website-*.log
+
+# Test SSL certificate
+openssl s_client -connect your-domain.com:3030 -servername your-domain.com
 ```
 
 ## Docker
@@ -253,6 +347,53 @@ The deployment system automatically finds an available port (3000-3100):
 - Application: `/health` endpoint
 - Deployment: Verifies service before completing
 
+## Production Configuration
+
+### Live Deployment
+
+The production website is currently deployed with the following configuration:
+
+**URLs:**
+- 🔒 **HTTPS:** https://srv1013438.hstgr.cloud:3030
+- 🏥 **Health Check:** https://srv1013438.hstgr.cloud:3030/health
+
+**Infrastructure:**
+- **Docker Container:** Port 3007 (internal)
+- **NGINX Reverse Proxy:** Port 3030 (public, HTTPS)
+- **SSL/TLS:** Let's Encrypt certificate
+- **Protocol:** HTTP/2 with TLS 1.3
+- **Cipher:** TLS_AES_256_GCM_SHA384
+
+**Architecture:**
+```
+Internet (HTTPS :3030)
+       ↓
+NGINX Reverse Proxy
+  - SSL/TLS Termination
+  - HTTP/2
+  - Security Headers
+       ↓
+Docker Container (:3007)
+  - React App (Vite)
+  - Health Checks
+```
+
+**Security Features:**
+- ✅ TLS 1.3 and TLS 1.2 support
+- ✅ HTTP/2 enabled
+- ✅ Strong cipher suites (ECDHE with GCM)
+- ✅ Perfect Forward Secrecy
+- ✅ Security headers (X-Frame-Options, CSP, etc.)
+- ✅ Valid Let's Encrypt certificate
+
+**Deployment Files:**
+- NGINX Config: `/etc/nginx/sites-available/farmacia-maggia-website`
+- SSL Certificates: `/etc/letsencrypt/live/srv1013438.hstgr.cloud/`
+- Docker Compose: `/opt/farmacia-maggia-website/docker-compose.yml`
+- Logs: `/var/log/nginx/farmacia-maggia-website-*.log`
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment documentation and troubleshooting guide.
+
 ## Browser Support
 
 - Chrome (last 2 versions)
@@ -277,6 +418,6 @@ Built with Claude Code for Farmacia Maggia, Ticino, Switzerland.
 
 ---
 
-**Status**: 🟢 Active Development
+**Status**: 🟢 Production with HTTPS
 **Version**: 1.0.0
-**Last Updated**: 2025-10-31
+**Last Updated**: 2025-11-01
